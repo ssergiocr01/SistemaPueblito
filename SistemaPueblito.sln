@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{B401E74D-8035-41FF-BAEC-83A45B2C3680}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{0752150A-EB4D-4A0E-9AD7-7948F21D3570}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaPueblito.Common", "SistemaPueblito.Common\SistemaPueblito.Common.csproj", "{5A6C54C1-A817-42BF-A497-C72E8087113E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaPueblito.Web", "SistemaPueblito.Web\SistemaPueblito.Web.csproj", "{42331957-032E-45B6-A854-B57B2E095913}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A6C54C1-A817-42BF-A497-C72E8087113E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A6C54C1-A817-42BF-A497-C72E8087113E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A6C54C1-A817-42BF-A497-C72E8087113E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A6C54C1-A817-42BF-A497-C72E8087113E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42331957-032E-45B6-A854-B57B2E095913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42331957-032E-45B6-A854-B57B2E095913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42331957-032E-45B6-A854-B57B2E095913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42331957-032E-45B6-A854-B57B2E095913}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{42331957-032E-45B6-A854-B57B2E095913} = {B401E74D-8035-41FF-BAEC-83A45B2C3680}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA5063E6-D6AE-47EA-AFEB-D3B37FE9F368}
+	EndGlobalSection
+EndGlobal
