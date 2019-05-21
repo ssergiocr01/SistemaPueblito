@@ -1,40 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SistemaPueblito.Web.Data;
-using SistemaPueblito.Web.Data.Entities;
-
-namespace SistemaPueblito.Web.Controllers
+﻿namespace SistemaPueblito.Web.Controllers
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Data.Entities;
+    using Data.Repositories;
+
     public class HousesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IRepository repository;
 
-        public HousesController(DataContext context)
+        public HousesController(IRepository repository)
         {
-            _context = context;
+            this.repository = repository;
         }
 
         // GET: Houses
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Houses.ToListAsync());
+            return View(this.repository.GetHouses());
         }
 
         // GET: Houses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = await _context.Houses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var house = this.repository.GetHouse(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -54,26 +51,26 @@ namespace SistemaPueblito.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] House house)
+        public async Task<IActionResult> Create(House house)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(house);
-                await _context.SaveChangesAsync();
+                this.repository.AddHouse(house);
+                await this.repository.SaveAllAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(house);
         }
 
         // GET: Houses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = await _context.Houses.FindAsync(id);
+            var house = this.repository.GetHouse(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -86,23 +83,19 @@ namespace SistemaPueblito.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] House house)
+        public async Task<IActionResult> Edit(House house)
         {
-            if (id != house.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(house);
-                    await _context.SaveChangesAsync();
+                    this.repository.UpdateHouse(house);
+                    await this.repository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HouseExists(house.Id))
+                    if (!this.repository.HouseExists(house.Id))
                     {
                         return NotFound();
                     }
@@ -117,15 +110,14 @@ namespace SistemaPueblito.Web.Controllers
         }
 
         // GET: Houses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = await _context.Houses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var house = this.repository.GetHouse(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -139,15 +131,12 @@ namespace SistemaPueblito.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var house = await _context.Houses.FindAsync(id);
-            _context.Houses.Remove(house);
-            await _context.SaveChangesAsync();
+            var house = this.repository.GetHouse(id);
+            this.repository.RemoveHouse(house);
+            await this.repository.SaveAllAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool HouseExists(int id)
-        {
-            return _context.Houses.Any(e => e.Id == id);
-        }
+        
     }
 }

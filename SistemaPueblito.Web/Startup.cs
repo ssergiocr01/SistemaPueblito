@@ -1,5 +1,7 @@
 ﻿namespace SistemaPueblito.Web
 {
+    using Data;
+    using Data.Repositories;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -7,7 +9,6 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using SistemaPueblito.Web.Data;
 
     public class Startup
     {
@@ -23,6 +24,8 @@
         {
 
             services.AddTransient<SeedDb>();
+
+            services.AddScoped<IRepository, Repository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
