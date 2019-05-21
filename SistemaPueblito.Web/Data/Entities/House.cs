@@ -10,5 +10,7 @@
         [Required]
         [Display(Name = "Casa")]
         public string Name { get; set; }
+
+        public User User { get; set; }
     }
 }
