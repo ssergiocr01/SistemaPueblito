@@ -1,37 +1,40 @@
 ﻿namespace SistemaPueblito.Web.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Data.Entities;
     using Data.Repositories;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using SistemaPueblito.Web.Helpers;
+    using System.Threading.Tasks;
 
+    [Authorize]
     public class HousesController : Controller
     {
-        private readonly IRepository repository;
+        private readonly IHouseRepository houseRepository;
+        private readonly IUserHelper userHelper;
 
-        public HousesController(IRepository repository)
+        public HousesController(IHouseRepository houseRepository, IUserHelper userHelper)
         {
-            this.repository = repository;
+            this.houseRepository = houseRepository;
+            this.userHelper = userHelper;
         }
 
         // GET: Houses
         public IActionResult Index()
         {
-            return View(this.repository.GetHouses());
+            return View(this.houseRepository.GetAll());
         }
 
         // GET: Houses/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = this.repository.GetHouse(id.Value);
+            var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -54,23 +57,23 @@
         public async Task<IActionResult> Create(House house)
         {
             if (ModelState.IsValid)
-            {
-                this.repository.AddHouse(house);
-                await this.repository.SaveAllAsync();
+            {                
+                house.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                await this.houseRepository.CreateAsync(house);
                 return RedirectToAction(nameof(Index));
             }
             return View(house);
         }
 
         // GET: Houses/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = this.repository.GetHouse(id.Value);
+            var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -85,17 +88,17 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(House house)
         {
-            
+
             if (ModelState.IsValid)
             {
                 try
-                {
-                    this.repository.UpdateHouse(house);
-                    await this.repository.SaveAllAsync();
+                {                    
+                    house.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await this.houseRepository.UpdateAsync(house);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!this.repository.HouseExists(house.Id))
+                    if (!await this.houseRepository.ExistAsync(house.Id))
                     {
                         return NotFound();
                     }
@@ -110,14 +113,14 @@
         }
 
         // GET: Houses/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var house = this.repository.GetHouse(id.Value);
+            var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
                 return NotFound();
@@ -131,12 +134,11 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var house = this.repository.GetHouse(id);
-            this.repository.RemoveHouse(house);
-            await this.repository.SaveAllAsync();
+            var house = await this.houseRepository.GetByIdAsync(id);
+            await this.houseRepository.DeleteAsync(house);
             return RedirectToAction(nameof(Index));
         }
 
-        
+
     }
 }

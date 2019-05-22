@@ -11,6 +11,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using SistemaPueblito.Web.Data.Entities;
+    using SistemaPueblito.Web.Helpers;
 
     public class Startup
     {
@@ -37,7 +38,13 @@
 
             services.AddTransient<SeedDb>();
 
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IHouseRepository, HouseRepository>();
+
+            services.AddScoped<IChildRepository, ChildRepository>();
+
+            services.AddScoped<IStateRepository, StateRepository>();
+
+            services.AddScoped<IUserHelper, UserHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

@@ -5,23 +5,24 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Helpers;
 
     public class SeedDb
     {
         private readonly DataContext context;
-        private readonly UserManager<User> userManager;
+        private readonly IUserHelper userHelper;
 
-        public SeedDb(DataContext context, UserManager<User> userManager)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             this.context = context;
-            this.userManager = userManager;
+            this.userHelper = userHelper;
         }
 
         public async Task SeedAsync()
         {
             await this.context.Database.EnsureCreatedAsync();
 
-            var user = await this.userManager.FindByEmailAsync("ssergiocr01@gmail.com");
+            var user = await this.userHelper.GetUserByEmailAsync("ssergiocr01@gmail.com");
 
             if (user == null)
             {
@@ -33,7 +34,7 @@
                     UserName = "ssergiocr01@gmail.com"
                 };
 
-                var result = await this.userManager.CreateAsync(user, "123456");
+                var result = await this.userHelper.AddUserAsync(user, "123456");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("No se pudo crear el usuario");

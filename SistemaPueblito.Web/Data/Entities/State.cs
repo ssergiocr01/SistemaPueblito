@@ -2,13 +2,12 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class House : IEntity
+    public class State : IEntity
     {
         public int Id { get; set; }
 
-        [MaxLength(50, ErrorMessage = "El campo {0} debe tener un máximo de {1} caracteres")]
         [Required]
-        [Display(Name = "Casa")]
+        [Display(Name = "Estado")]
         public string Name { get; set; }
 
         public User User { get; set; }
