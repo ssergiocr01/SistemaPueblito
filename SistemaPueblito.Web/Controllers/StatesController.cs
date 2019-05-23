@@ -4,61 +4,25 @@
     using Microsoft.EntityFrameworkCore;
     using SistemaPueblito.Web.Data.Entities;
     using SistemaPueblito.Web.Data.Repositories;
-    using SistemaPueblito.Web.Helpers;
     using System.Threading.Tasks;
 
     public class StatesController : Controller
     {
         private readonly IStateRepository stateRepository;
-        private readonly IUserHelper userHelper;
 
-        public StatesController(IStateRepository stateRepository, IUserHelper userHelper)
+        public StatesController(IStateRepository stateRepository)
         {
             this.stateRepository = stateRepository;
-            this.userHelper = userHelper;
         }
 
+        // GET: States
         public IActionResult Index()
         {
-            return this.View(stateRepository.GetAll());
+            return View(this.stateRepository.GetAll());
         }
 
+        // GET: States/Details/5
         public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var state = await this.stateRepository.GetByIdAsync(id.Value);
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            return View(state);
-        }
-
-        public IActionResult Create()
-        {
-            return this.View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(State state)
-        {
-            if (this.ModelState.IsValid)
-            {
-                state.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                await this.stateRepository.CreateAsync(state);
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(state);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -74,15 +38,55 @@
             return View(state);
         }
 
+        // GET: States/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: States/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(State state)
+        {
+            if (ModelState.IsValid)
+            {
+                await this.stateRepository.CreateAsync(state);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(state);
+        }
+
+        // GET: States/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var state = await this.stateRepository.GetByIdAsync(id.Value);
+            if (state == null)
+            {
+                return NotFound();
+            }
+            return View(state);
+        }
+
+        // POST: States/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(State state)
         {
-            if (this.ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    state.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await this.stateRepository.UpdateAsync(state);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -101,6 +105,7 @@
             return View(state);
         }
 
+        // GET: States/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -117,6 +122,7 @@
             return View(state);
         }
 
+        // POST: States/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -125,5 +131,6 @@
             await this.stateRepository.DeleteAsync(state);
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

@@ -27,9 +27,7 @@
 
         [Display(Name = "Imagen")]
         public string ImageUrl { get; set; }
-
-        public State State { get; set; }
-
+       
 
         public User User { get; set; }
 

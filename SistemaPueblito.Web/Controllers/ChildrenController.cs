@@ -14,14 +14,16 @@
     [Authorize]
     public class ChildrenController : Controller
     {
-        private readonly IChildRepository childRepository;
+        private readonly IChildRepository childRepository;        
         private readonly IUserHelper userHelper;
 
-        public ChildrenController(IChildRepository childRepository, IUserHelper userHelper)
+        public ChildrenController(IChildRepository childRepository,            
+            IUserHelper userHelper)
         {
             this.childRepository = childRepository;
+            
             this.userHelper = userHelper;
-        }
+        }        
 
         public IActionResult Index()
         {
@@ -71,7 +73,7 @@
 
                     path = $"~/images/Children/{file}";
                 }
-                
+
                 view.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 var child = this.ToChild(view, path);
                 await this.childRepository.CreateAsync(child);
@@ -150,7 +152,7 @@
 
                         path = $"~/images/Children/{file}";
                     }
-                    
+
                     view.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     var child = this.ToChild(view, path);
                     await this.childRepository.UpdateAsync(child);
