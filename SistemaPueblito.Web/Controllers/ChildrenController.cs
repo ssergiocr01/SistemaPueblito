@@ -11,7 +11,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    [Authorize]
+    
     public class ChildrenController : Controller
     {
         private readonly IChildRepository childRepository;        
@@ -34,18 +34,19 @@
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             var child = await this.childRepository.GetByIdAsync(id.Value);
             if (child == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             return View(child);
         }
 
+        [Authorize(Roles ="Administrador")]
         public IActionResult Create()
         {
             return View();
@@ -97,17 +98,18 @@
             };
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             var child = await this.childRepository.GetByIdAsync(id.Value);
             if (child == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             var view = this.ToChildViewModel(child);
@@ -161,7 +163,7 @@
                 {
                     if (!await this.childRepository.ExistAsync(view.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("ChildNotFound");
                     }
                     else
                     {
@@ -175,17 +177,18 @@
             return View(view);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             var child = await this.childRepository.GetByIdAsync(id.Value);
             if (child == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ChildNotFound");
             }
 
             return View(child);
@@ -198,6 +201,11 @@
             var child = await this.childRepository.GetByIdAsync(id);
             await this.childRepository.DeleteAsync(child);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ChildNotFound()
+        {
+            return this.View();
         }
     }
 }

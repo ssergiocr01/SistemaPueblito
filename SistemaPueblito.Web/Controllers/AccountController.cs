@@ -148,6 +148,109 @@
             return this.View(model);
         }
 
+        public IActionResult ChangePassword()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await this.userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "Usuario no encontrado");
+                }
+            }
+
+            return this.View(model);
+        }
+
+        public IActionResult NotAuthorized()
+        {
+            return this.View();
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var users = await this.userHelper.GetAllUsersAsync();
+            foreach (var user in users)
+            {
+                var myUser = await this.userHelper.GetUserByIdAsync(user.Id);
+
+                if (myUser != null)
+                {
+                    user.IsAdmin = await this.userHelper.IsUserInRoleAsync(myUser, "Administrador");
+                }
+            }
+
+            return this.View(users);
+        }
+
+        public async Task<IActionResult> AdminOff(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var user = await this.userHelper.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await this.userHelper.RemoveUserFromRoleAsync(user, "Administrador");
+            return this.RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> AdminOn(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var user = await this.userHelper.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await this.userHelper.AddUserToRoleAsync(user, "Administrador");
+            return this.RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var user = await this.userHelper.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await this.userHelper.DeleteUserAsync(user);
+            return this.RedirectToAction(nameof(Index));
+        }
 
     }
 }

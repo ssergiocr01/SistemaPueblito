@@ -41,7 +41,8 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> 
-        <a asp-action="Index" class="btn btn-success">Regresar</a>
+        @*<input type="submit" value="Eliminar" class="btn btn-danger" />*@ 
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Eliminar</button>
+        <a asp-action="Index" class="btn btn-success"><i class="fa fa-chevron-left"></i> Regresar</a>
     </form>
 </div>

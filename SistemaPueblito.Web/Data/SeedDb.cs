@@ -22,6 +22,9 @@
         {
             await this.context.Database.EnsureCreatedAsync();
 
+            await this.userHelper.CheckRoleAsync("Administrador");
+            await this.userHelper.CheckRoleAsync("Usuario");
+
             var user = await this.userHelper.GetUserByEmailAsync("ssergiocr01@gmail.com");
 
             if (user == null)
@@ -39,6 +42,14 @@
                 {
                     throw new InvalidOperationException("No se pudo crear el usuario");
                 }
+
+                await this.userHelper.AddUserToRoleAsync(user, "Administrador");
+            }
+
+            var isInRole = await this.userHelper.IsUserInRoleAsync(user, "Administrador");
+            if (!isInRole)
+            {
+                await this.userHelper.AddUserToRoleAsync(user, "Administrador");
             }
 
             if (!this.context.Houses.Any())

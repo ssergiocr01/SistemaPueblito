@@ -20,6 +20,7 @@
         public string LastName { get; set; }
 
         [Display(Name = "Fecha de Nacimiento")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? BirthDate { get; set; }
 
         [Display(Name = "Edad")]
@@ -27,7 +28,6 @@
 
         [Display(Name = "Imagen")]
         public string ImageUrl { get; set; }
-       
 
         public User User { get; set; }
 

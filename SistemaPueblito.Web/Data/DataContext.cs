@@ -9,9 +9,7 @@
     {
         public DbSet<House> Houses { get; set; }
 
-        public DbSet<Child> Children { get; set; }
-
-        public DbSet<State> States { get; set; }
+        public DbSet<Child> Children { get; set; }        
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

@@ -8,7 +8,7 @@
     using SistemaPueblito.Web.Helpers;
     using System.Threading.Tasks;
 
-    [Authorize]
+    
     public class HousesController : Controller
     {
         private readonly IHouseRepository houseRepository;
@@ -31,18 +31,19 @@
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
 
             var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
 
             return View(house);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Houses/Create
         public IActionResult Create()
         {
@@ -65,18 +66,19 @@
             return View(house);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Houses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
 
             var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
             return View(house);
         }
@@ -112,18 +114,19 @@
             return View(house);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Houses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
 
             var house = await this.houseRepository.GetByIdAsync(id.Value);
             if (house == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("HouseNotFound");
             }
 
             return View(house);
@@ -137,6 +140,11 @@
             var house = await this.houseRepository.GetByIdAsync(id);
             await this.houseRepository.DeleteAsync(house);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult HouseNotFound()
+        {
+            return this.View();
         }
 
 
